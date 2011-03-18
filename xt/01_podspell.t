@@ -9,3 +9,7 @@ __DATA__
 Masahiro Nagano
 kazeburo {at} gmail.com
 Scope::Container::DBI
+DBI's
+InactiveDestroy
+dsn
+

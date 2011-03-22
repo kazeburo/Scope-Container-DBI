@@ -157,15 +157,15 @@ You can control DB connection within any scope.
 
 =over 4
 
-=item Scope::Container::DBI->connect();
+=item $dbh = Scope::Container::DBI->connect();
 
 connect to databases and cache connections.
 
-  Scope::Container::DBI->connect($dsn,$user,$password,$attr);
+  $dbh = Scope::Container::DBI->connect($dsn,$user,$password,$attr);
 
 You can give multiple dsn with arrayref, Scope::Container::DBI chooses database randomly.
  
-  Scope::Container::DBI->connect(
+  $dbh = Scope::Container::DBI->connect(
       [$dsn,$user,$password,$attr],
       [$dsn,$user,$password,$attr],
       [$dsn,$user,$password,$attr]
@@ -183,7 +183,7 @@ Scope::Container::DBI checks pid or thread id when reuses database connections. 
 
 =item Callbacks
 
-You can set callbacks after connect with DBI's Callbacks function.
+Scope::Container::DBI doesn't have callback function, but you can set callbacks after connect with DBI's Callbacks function.
 
   my $dbh = Scope::Container::DBI->connect($dsn, $username, $password, {
       RaiseError => 1,

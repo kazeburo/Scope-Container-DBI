@@ -12,4 +12,5 @@ Scope::Container::DBI
 DBI's
 InactiveDestroy
 dsn
+RootClass
 

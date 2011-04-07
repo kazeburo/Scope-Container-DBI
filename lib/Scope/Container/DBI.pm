@@ -209,6 +209,7 @@ There is two way of using DBI subclass with Scope::Container::DBI. One is DBI's 
 
   local $Scope::Container::DBI::DBI_CLASS = 'MySubDBI';
   my $dbh = Scope::Container::DBI->connect($dsn, $username, $password);
+  # ref($dbh) is 'MySubDBI::db'
 
 =back
 

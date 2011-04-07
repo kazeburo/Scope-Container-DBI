@@ -1,4 +1,7 @@
 Revision history for Perl extension Scope::Container::DBI
 
+0.02    Thu Apr 7 17:55:03 2011
+        - support DBI's subclass
+
 0.01    Thu Mar 10 00:00:20 2011
         - original version

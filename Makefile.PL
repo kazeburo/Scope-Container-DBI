@@ -7,7 +7,7 @@ requires 'Log::Minimal';
 requires 'List::Util';
 requires 'Data::Dumper';
 requires 'DBI';
-
+requires 'Class::Load';
 
 tests 't/*.t';
 author_tests 'xt';

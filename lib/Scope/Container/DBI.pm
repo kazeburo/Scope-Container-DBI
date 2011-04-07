@@ -6,10 +6,11 @@ use Scope::Container;
 use Log::Minimal;
 use List::Util qw/shuffle/;
 use Data::Dumper;
+use Class::Load qw/load_class/;
 use Carp;
 use DBI;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our $DBI_CLASS = 'DBI';
 
 sub connect {
@@ -46,6 +47,8 @@ sub connect {
 
     my ($dsn, $user, $pass, $attr) = @dsn;
     $attr->{AutoInactiveDestroy} = 1;
+
+    load_class $DBI_CLASS;
 
     my $dbh = do {
         if ($INC{'Apache/DBI.pm'} && $ENV{MOD_PERL}) {

@@ -12,7 +12,7 @@ use Class::Load qw/load_class/;
 use Carp;
 use DBI;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our $DBI_CLASS = 'DBI';
 
 sub connect {

@@ -6,6 +6,8 @@ use Scope::Container;
 use Log::Minimal;
 use List::Util qw/shuffle/;
 use Data::Dumper;
+use Try::Tiny;
+use Time::HiRes qw//;
 use Class::Load qw/load_class/;
 use Carp;
 use DBI;
@@ -46,17 +48,28 @@ sub connect {
     return $cached_dbh if $cached_dbh;
 
     my ($dsn, $user, $pass, $attr) = @dsn;
+    $attr ||= {};
     $attr->{AutoInactiveDestroy} = 1;
-
+    my $retry = exists $attr->{ScopeContainerConnectRetry} ? delete $attr->{ScopeContainerConnectRetry} : 1;
+    my $sleep = delete $attr->{ScopeContainerConnectRetrySleep};
+    $sleep = $sleep / 1000 if $sleep;
     load_class $DBI_CLASS;
 
     my $dbh = do {
-        if ($INC{'Apache/DBI.pm'} && $ENV{MOD_PERL}) {
-            local $DBI::connect_via = 'connect'; # Disable Apache::DBI.
-            $DBI_CLASS->connect( $dsn, $user, $pass, $attr );
-        } else {
-            $DBI_CLASS->connect( $dsn, $user, $pass, $attr );
+        my $connect;
+        for ( 1..$retry ) {
+            try {
+                if ($INC{'Apache/DBI.pm'} && $ENV{MOD_PERL}) {
+                    local $DBI::connect_via = 'connect'; # Disable Apache::DBI.
+                    $connect = $DBI_CLASS->connect( $dsn, $user, $pass, $attr );
+                } else {
+                    $connect = $DBI_CLASS->connect( $dsn, $user, $pass, $attr );
+                }
+            };
+            last if $connect;
+            Time::HiRes::sleep($sleep) if $sleep && $retry != $_;
         }
+        $connect;
     };
     croak($DBI::errstr) if !$dbh;
 
@@ -174,6 +187,28 @@ You can give multiple dsn with arrayref, Scope::Container::DBI chooses database 
       [$dsn,$user,$password,$attr],
       [$dsn,$user,$password,$attr]
   );
+
+=back
+
+
+=head1 ADDITIONAL ATTRIBUTES
+
+=over 4
+
+=item ScopeContainerConnectRetry
+
+number of connection retry, if failed connection.
+
+  my $dbh = Scope::Container::DBI->connect(
+      'dbi:mysql:mydb;host=myhost', 'myuser', 'mypasswd',
+      { RaiseError => 1, mysql_connect_timeout => 4, ScopeContainerConnectRetry => 2 }
+  );
+
+If connection failed, Scope::Container::DBI retries 2 times internally.
+
+=item ScopeContainerConnectRetrySleep
+
+millisecond. interval seconds of connection retry.
 
 =back
 

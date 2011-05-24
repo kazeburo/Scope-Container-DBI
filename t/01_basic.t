@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use Test::SharedFork;
-use File::Temp qw/tempfile/;
+use File::Temp qw/tempfile tempdir/;
 use Scope::Container;
 use Scope::Container::DBI;
 
@@ -19,6 +19,9 @@ use Scope::Container::DBI;
     my $dbh3 = Scope::Container::DBI->connect("dbi:SQLite:dbname=$tmp1","","", { RaiseError => 1 } );
     ok($dbh3);
     isnt($dbh,$dbh3);
+
+    my $dbh4 = Scope::Container::DBI->connect("dbi:SQLite:dbname=$tmp1","","", { RaiseError => 1, ScopeContainerConnectRetry => 2 } );
+    ok($dbh4);
 }
 
 
@@ -75,5 +78,24 @@ use Scope::Container::DBI;
 
     unlink($tmp1);
 }
+
+{
+    my $sc = start_scope_container();
+    my $dir = tempdir( CLEANUP => 1 );
+    chmod '0400', $dir;
+
+    my $pid = fork();
+    if ($pid == 0) {
+        sleep 1;
+        chmod '0755', $dir;
+        exit;
+    }
+
+    my $dbh = Scope::Container::DBI->connect("dbi:SQLite:dbname=$dir/foo","","", { RaiseError => 1, ScopeContainerConnectRetry => 4, ScopeContainerConnectRetrySleep => 500 } );
+    ok($dbh);
+
+    waitpid($pid,0);
+}
+
 
 done_testing();

@@ -13,4 +13,5 @@ DBI's
 InactiveDestroy
 dsn
 RootClass
-
+ScopeContainerConnectRetry
+ScopeContainerConnectRetrySleep

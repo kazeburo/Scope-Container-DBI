@@ -22,6 +22,10 @@ use Scope::Container::DBI;
 
     my $dbh4 = Scope::Container::DBI->connect("dbi:SQLite:dbname=$tmp1","","", { RaiseError => 1, ScopeContainerConnectRetry => 2 } );
     ok($dbh4);
+
+    my $dbh5 = Scope::Container::DBI->connect("dbi:SQLite:dbname=$tmp1","","", { RaiseError => 1, ScopeContainerConnectRetry => 2 } );
+    ok($dbh5);
+    is($dbh4,$dbh5);
 }
 
 

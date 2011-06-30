@@ -6,7 +6,7 @@ requires 'Scope::Container';
 requires 'Log::Minimal';
 requires 'List::Util';
 requires 'Data::Dumper';
-requires 'DBI';
+requires 'DBI', 1.614;
 requires 'Class::Load';
 
 tests 't/*.t';

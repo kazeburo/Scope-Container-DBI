@@ -10,9 +10,9 @@ use Try::Tiny;
 use Time::HiRes qw//;
 use Class::Load qw/load_class/;
 use Carp;
-use DBI;
+use DBI 1.615;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our $DBI_CLASS = 'DBI';
 
 sub connect {

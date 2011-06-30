@@ -1,5 +1,9 @@
 Revision history for Perl extension Scope::Container::DBI
 
+0.05    Thu Jun 30 19:10:34 2011
+        - requires DBI >= 1.615
+        - no code changes
+
 0.04    Tue May 24 10:24:14 2011
         - supports retring connection
 

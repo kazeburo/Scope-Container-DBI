@@ -1,5 +1,8 @@
 Revision history for Perl extension Scope::Container::DBI
 
+0.06    Wed Jun 13 19:36:46 2011
+        - uses Module::Load instead of Class::Load for less dependencies
+
 0.05    Thu Jun 30 19:10:34 2011
         - requires DBI >= 1.615
         - no code changes

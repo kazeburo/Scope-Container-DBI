@@ -2,12 +2,12 @@ use inc::Module::Install;
 name 'Scope-Container-DBI';
 all_from 'lib/Scope/Container/DBI.pm';
 
-requires 'Scope::Container';
+requires 'Scope::Container', 0.04;
 requires 'Log::Minimal';
 requires 'List::Util';
 requires 'Data::Dumper';
 requires 'DBI', 1.614;
-requires 'Class::Load';
+requires 'Module::Load';
 
 tests 't/*.t';
 author_tests 'xt';

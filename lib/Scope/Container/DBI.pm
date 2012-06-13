@@ -8,7 +8,7 @@ use List::Util qw/shuffle/;
 use Data::Dumper;
 use Try::Tiny;
 use Time::HiRes qw//;
-use Class::Load qw/load_class/;
+use Module::Load qw/load/;
 use Carp;
 use DBI 1.615;
 
@@ -53,8 +53,10 @@ sub connect {
     my $retry = exists $attr->{ScopeContainerConnectRetry} ? delete $attr->{ScopeContainerConnectRetry} : 1;
     my $sleep = delete $attr->{ScopeContainerConnectRetrySleep};
     $sleep = $sleep / 1000 if $sleep;
-    load_class $DBI_CLASS;
 
+    if ( ! is_class_loaded($DBI_CLASS) ) {
+        load $DBI_CLASS;
+    }
     my $dbh = do {
         my $connect;
         for ( 1..$retry ) {
@@ -115,6 +117,45 @@ sub _save_cache {
     return unless in_scope_container();
     scope_container($key, shift);
 }
+
+# stolen from Mouse::PurePerl
+sub is_class_loaded {
+    my $class = shift;
+
+    return 0 if ref($class) || !defined($class) || !length($class);
+
+    # walk the symbol table tree to avoid autovififying
+    # \*{${main::}{"Foo::"}{"Bar::"}} == \*main::Foo::Bar::
+
+    my $pack = \%::;
+
+    foreach my $part (split('::', $class)) {
+        $part .= '::';
+        return 0 if !exists $pack->{$part};
+
+        my $entry = \$pack->{$part};
+        return 0 if ref($entry) ne 'GLOB';
+        $pack = *{$entry}{HASH};
+    }
+
+    return 0 if !%{$pack};
+
+    # check for $VERSION or @ISA
+    return 1 if exists $pack->{VERSION}
+             && defined *{$pack->{VERSION}}{SCALAR} && defined ${ $pack->{VERSION} };
+    return 1 if exists $pack->{ISA}
+             && defined *{$pack->{ISA}}{ARRAY} && @{ $pack->{ISA} } != 0;
+
+    # check for any method
+    foreach my $name( keys %{$pack} ) {
+        my $entry = \$pack->{$name};
+        return 1 if ref($entry) ne 'GLOB' || defined *{$entry}{CODE};
+    }
+
+    # fail
+    return 0;
+}
+
 
 1;
 __END__

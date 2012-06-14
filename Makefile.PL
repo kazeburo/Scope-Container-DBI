@@ -6,8 +6,9 @@ requires 'Scope::Container', 0.04;
 requires 'Log::Minimal';
 requires 'List::Util';
 requires 'Data::Dumper';
-requires 'DBI', 1.614;
+requires 'DBI', 1.615;
 requires 'Module::Load';
+requires 'Try::Tiny', 0.11;
 
 tests 't/*.t';
 author_tests 'xt';

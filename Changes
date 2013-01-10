@@ -1,5 +1,8 @@
 Revision history for Perl extension Scope::Container::DBI
 
+0.08    Thu Jan 10 14:01:56 2013
+        - show correct connection errors (thanks tagomoris)
+
 0.07    Thu Jun 14 10:22:11 2012
         - fixed requires
 

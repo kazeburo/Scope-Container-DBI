@@ -57,6 +57,7 @@ sub connect {
     if ( ! is_class_loaded($DBI_CLASS) ) {
         load $DBI_CLASS;
     }
+    my $lasterrstr;
     my $dbh = do {
         my $connect;
         for ( 1..$retry ) {
@@ -67,13 +68,17 @@ sub connect {
                 } else {
                     $connect = $DBI_CLASS->connect( $dsn, $user, $pass, $attr );
                 }
+                die $DBI::errstr."\n" unless $connect;
+            }
+            catch {
+                $lasterrstr = $_;
             };
             last if $connect;
             Time::HiRes::sleep($sleep) if $sleep && $retry != $_;
         }
         $connect;
     };
-    croak($DBI::errstr) if !$dbh;
+    croak($lasterrstr) if !$dbh;
 
     my $dbi = {
         dbh => $dbh,

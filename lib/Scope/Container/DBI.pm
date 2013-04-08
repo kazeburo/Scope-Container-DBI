@@ -95,6 +95,7 @@ sub _build_dsn_key {
     my @dsn = @_;
     local $Data::Dumper::Terse = 1;
     local $Data::Dumper::Indent = 0;
+    local $Data::Dumper::Sortkeys = 1;
     my $key = Data::Dumper::Dumper(\@dsn);
     "sc:dbix:".$key;
 }

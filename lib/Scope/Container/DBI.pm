@@ -12,7 +12,7 @@ use Module::Load qw/load/;
 use Carp;
 use DBI 1.615;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 our $DBI_CLASS = 'DBI';
 
 sub connect {

@@ -1,5 +1,8 @@
 Revision history for Perl extension Scope::Container::DBI
 
+0.09    Mon Apr 8 11:45:57 2013
+        - enable Data::Dumper::SortKeys. perl-5.18 randomizes hash order 
+
 0.08    Thu Jan 10 14:01:56 2013
         - show correct connection errors (thanks tagomoris)
 
